@@ -1,0 +1,374 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Openwrt二级路由配置ipv6折腾记 | Elivis&#39; Blog</title>
+<link rel="shortcut icon" href="https://geeek.top/favicon.ico?v=1679300570926">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://geeek.top/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Openwrt二级路由配置ipv6折腾记 | Elivis&#39; Blog - Atom Feed" href="https://geeek.top/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-160641531-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-160641531-1');
+</script>
+
+
+    <meta name="description" content="前言
+故事的起因
+早就玩过软路由openwrt，被它可以路由器级科学上网、解锁网易云无版权歌曲、DNS精华、网络拦截等等功能所吸引，但是一直没有将其用在平常的网络拓扑中。最近上了咸鱼红米AX6路由器的车，200多点的价格买回来一个。512M..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content note-serif-sc-font">
+        <div class="site-header">
+  <a href="https://geeek.top">
+  <img class="avatar" src="https://geeek.top/images/avatar.png?v=1679300570926" alt="">
+  </a>
+  <h1 class="site-title">
+    Elivis&#39; Blog
+  </h1>
+  <p class="site-description">
+    
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+      
+        <a href="/friends" class="menu">
+          友链
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Openwrt二级路由配置ipv6折腾记
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-08-08
+              </span>
+              <span>
+                13 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h2 id="前言">前言</h2>
+<h3 id="故事的起因">故事的起因</h3>
+<p>早就玩过软路由openwrt，被它可以路由器级科学上网、解锁网易云无版权歌曲、DNS精华、网络拦截等等功能所吸引，但是一直没有将其用在平常的网络拓扑中。最近上了咸鱼红米AX6路由器的车，200多点的价格买回来一个。512M的RAM，128M的ROM，支持硬件加解密，千兆WIFI6，可刷openwrt。这样的性价比让我狠狠心动，然后就上了车。</p>
+<p>买回来自己刷了机，自带的系统不需要过多的配网设置就可以满足一般的使用。但是观察后发现，路由器的下级子设备无法获取公网ipv6地址！考虑到这个路由器是要丢到学校去用的，而学校里ipv4是计费网络，流量一个月才50G；而ipv6不但不限流，而且出口带宽还更高。所以这ipv6可必须搞一搞，于是就开始折腾ipv6的配网环境。</p>
+<p>在看到各路大神的千奇百怪的配网方案以后，我一开始直接无脑照搬教程，结果各种问题百出，好几次都已经到了必须用reset键重置系统的地步（恼）。后来看到一篇<a href="https://blog.csdn.net/xiaobai__lee/article/details/65635525">CSDN博客</a>，那个老哥也是看到网上千奇百怪的配网方案后同样的问题百出。按照老哥的指引，开始读甲骨文公司写的<a href="https://docs.oracle.com/cd/E24847_01/pdf/819-7058.pdf">《系统管理指南：IP 服务》</a>。读了几十页手册，完善了自己一些技术上的缺失以后，发现网上教程各异的原因是每个人的配网需求并不一样，比如有人将openwrt作为拨号的一级路由，但是学校环境下openwrt只能作为二级路由。还比如有人只要能访问ipv6就可以了，但是我需要挂载NAS，所以必须要让子设备获取公网ip，这样的要求就高很多了......</p>
+<h3 id="配置环境">配置环境</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">items</th>
+<th style="text-align:center">value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">主机型号</td>
+<td style="text-align:center">Redmi AX6</td>
+</tr>
+<tr>
+<td style="text-align:center">CPU架构</td>
+<td style="text-align:center">ARMv8</td>
+</tr>
+<tr>
+<td style="text-align:center">固件版本</td>
+<td style="text-align:center">OpenWrt R22.7.15 / LuCI Master (git-21.335.48743-5f363d9)</td>
+</tr>
+<tr>
+<td style="text-align:center">内核版本</td>
+<td style="text-align:center">5.10.46</td>
+</tr>
+</tbody>
+</table>
+<h2 id="双栈配置方法汇总">双栈配置方法汇总</h2>
+<p>openwrt作为二级路由配置IPV6协议给终端分发网络具有四种方法：</p>
+<h3 id="方案一ap方案">方案一：AP方案</h3>
+<p>操作就是直接将校园网网线插入路由器的某个LAN口。因为openwrt已经做好了一个网桥，将所有的lan口桥接在一起。如果直接将网线插入lan口，那么路由器就变成了一个AP终端...这不就成了一个纯纯发射天线了吗？这样的话几十块钱的路由器就能办得到了，完全没有用上openwrt，显然不能这么干，pass。</p>
+<h3 id="方案二ipv6-nat方案">方案二：IPV6-NAT方案</h3>
+<p>NAT方案早就不陌生了，目前大家用的ipv4网络很多就是基于NAT方案的。NAT其实是为ipv4地址枯竭而诞生的技术。通俗来讲，你家里的路由器获取一个ipv4公网ip就能让家里的一大堆手机平板PC全都上网就是用的NAT技术。</p>
+<p>但是，这种方案在IPV6规划里面是不受官方推荐的（也是最不受我待见的），因为这种方式与IPV6最后要达到的企图背道而驰。IPV6时代要达到的目标是将世界的网络变为一个平面，一部终端具有全球唯一的一个公网IP地址，实现最简单的归一平面化，而NAT的存在却让这个网络框架有了层次感，显得冗余而杂乱。这与我“每一个终端设备都要具有全球唯一的公网ip”这个理念相违背，更何况在我的需求下还需要用公网ipv6实现NAS的内网穿透。综上所述，方案二，pass。</p>
+<h3 id="方案三基于网桥过滤技术的ipv6穿透方案ipv6-passthrough">方案三：基于网桥过滤技术的ipv6穿透方案(ipv6-passthrough)</h3>
+<p>首先，在我们的使用场景里面，ipv4肯定是要进行NAT方案的。在校园网络环境里面进行ipv4-NAT有很多好处：</p>
+<ul>
+<li>可以在路由器写脚本统一进行深澜认证，这样路由器子网下的设备都不用进行登陆认证了</li>
+<li>将NAS和终端设备挂入子网，可以通过NAT方案将网络划分层次，避免所有设备都直接挂入楼层的公共交换机。这样只有二级子网内的设备可以以ipv4访问NAS，提高了安全性。</li>
+<li>openwrt的各种插件可以正常接管ipv4网络流量，达到最高可玩性</li>
+</ul>
+<p>方案三的思路就是首先将wan6<strong>以lan口的身份接入路由，此时路由器将仅仅起到一个傻交换机</strong>的作用。然后再将双栈流量里的ipv4流量过滤掉，达到ipv6交换机，ipv4NAT的效果。这样虽然也能实现双栈访问，但是不够优雅，而且根据大佬的测试——这样使用内核过滤网络流量会对设备产生很大的压力，导致整体效率大幅下降。技术上的实现利用了路由器自带的'wan'和'wan6'两个逻辑接口。'wan'口使用openwrt默认接管方案（ipv4-only），然后新建一个网桥来桥接'wan6'口和所有的lan口，并且针对该网桥用数据链路层数据包过滤器iptables过滤掉所有的ipv4流量实现ipv6直通（在ipv6的处理方案上是不是和方案一有点像hhh）。</p>
+<p>配置方法：ssh建立以下脚本并运行即可，更详细的配置方法见<a href="https://zhuanlan.zhihu.com/p/50356712">知乎专栏</a></p>
+<pre><code>#!/bin/sh
+# 建立网桥
+ebtables -t broute -A BROUTING -i eth0 -p ! ipv6 -j DROP
+# 将 WAN 口 加入到网桥中
+brctl addif br0 eth0
+</code></pre>
+<p>这种方案最符合我的预期，而且因为是使用的网桥方案，不需要走NAT转发，相当于真正实现了直通，资源消耗最少，也最稳定。但是真正在折腾的时候，却发现我刷的openwrt并没有安装ebtables包,就算我手动opkg install也一直报错（一个架构错误和一个依赖错误，相当于本体和前置依赖包都安装不上）。所以这条路也走不通......</p>
+<h3 id="方案四ipv6中继方案">方案四：ipv6中继方案</h3>
+<p>这种方案是系统层面的将Ipv6中继给下级设备，其实实现效果也会和方案三一样。但是据说稳定性不如方案三，毕竟走的软件层面......但是目前来看也只能采用这一种方法了。</p>
+<p>坑：如果直接在搜索引擎中搜<code>6relayd配置</code>，会搜到很多关于6relayd这一个程序的配置教程，但是我在操作后发现也并不能顺利的执行。正当我准备骂娘的时候，突然看到了openwrt官方wiki上面写着</p>
+<pre><code>6relayd is deprecated since r40893
+use odhcpd
+</code></pre>
+<p>然后再一看那些教程帖子，时间都在19年以前......我艹！</p>
+<p>限定了帖子时间在21年以后，重新搜索，终于找到了合适的教程。</p>
+<p>首先ssh连上路由，然后编辑dhcp配置文件<br>
+<code>vim /etc/config/dhcp</code></p>
+<p>将配置中的lan、wan，wan6 三部分分别替换为如下文本</p>
+<pre><code> config dhcp 'lan'
+   option interface 'lan'
+   option start '100'
+   option limit '150'
+   option leasetime '12h'
+   option ra 'relay'
+   option ndp 'relay'
+   option dhcpv6 'relay'
+   option ra_management '1'
+
+config dhcp 'wan'
+   option interface 'wan'
+   option ignore '1'
+
+config dhcp 'wan6'
+   option interface 'wan'
+   option ra 'relay'
+   option ndp 'relay'
+   option dhcpv6 'relay'
+   option master '1'
+</code></pre>
+<p>注：这个<code>option master '1'</code>尤其关键，这个语句告诉系统这是一个master口(master/slave)，让路由器能够按照期望的设置正确的转发数据包。</p>
+<p>虽然openwrt的图形界面相当漂亮而且也可以进行详尽的配置，但是我的理念就是“玩linux要什么GUI，必须命令行啊”。<s>所以我也就只在这里详细列出命令行配置方案乐😋。</s> 图形界面的设置相同，简而言之就是把wan口和lan口的三个ipv6选项全部选择为“中继”。</p>
+<p>此时，打开你的设备，就可以看到设备获取了24xx开头的公网ipv6地址了。但是，真正访问ipv6网站的时候就会发现，这tm根本访问不了啊......更奇怪的是，windows有时候可以正常访问，重连一下就又概率访问不了，安卓端更是稳定的无法访问.......用<code>nslookup</code>命令查看后发现v6DNS可以正确的解析域名返回ip，但是就是无法访问......</p>
+<p>随后就是漫长的折腾，找了好久都没有找到帖子提到这个问题。大多和我有同样需求的人都是采用的方案三，方案四也没有一个靠谱的答案。在翻了无数帖子博客都没能找到合适的解决方案，马上快要放弃的时候，我搜到了<a href="https://bbs.pku.edu.cn/v2/post-read.php?bid=35&amp;threadid=18202802">一篇未名bbs的帖子</a>，发帖时间是今年的二月。在帖子中，这位北大老哥提到了一句话：</p>
+<blockquote>
+<p>可能刚获取到 IPv6 地址的时候还是不能连接到互联网，这是因为 OpenWRT 可能认为该 IP 并不在 lan 口上然后就没有 forward ndp 之类的，可以通过 ip -6 neigh 查看。解决方案是 ping 一下路由器的 IPv6 地址就好。</p>
+</blockquote>
+<p>废话不多说，直接<code>ip -6 neigh</code>，确实发现子网内设备获取的的ipv6地址状态都是failed，然后将信将疑的ping了一下路由器的地址.......然后奇迹发生了，ping完以后果然网络通畅了。安卓端没法ping，我就用的早就装好的best trace软件去追踪随便一个ipv6网站，因为在追踪跃点的时候它会有一个ping过程来返回每一级路由的延迟。<s>就这样解决了这个无敌奇葩的bug。</s></p>
+<hr>
+<p><strong>20230320更新</strong></p>
+<p>解决个锤子，联网前要ping一下这也太麻烦了吧。</p>
+<p>随着学校无线网络的日益拉跨，我又重新燃起了在学校使用双栈环境网络的主意。这一方面是因为有线的ipv6是<strong>上下行千兆对等不限速的</strong>网络，同时还有公网ip。相比之下桥接的无线网路只有百兆的带宽上限，同时还要和一堆邻居一起公用一个ap，网速和稳定性那自然是不要想了。</p>
+<p>回到正题，这次终于找到了好用的解决办法。</p>
+<p>这个bug被很多人发现过，总而言之就是op的路由策略有问题，无法主动捕获邻居通告<strong>NA</strong>，从路由表中看的效果就是ipv6邻居中无法发现下级已经获取地址的网络设备。需要主动ping路由器来“宣告”自己的存在，否则会被路由器直接丢包。</p>
+<p>解决方案：参考参考文献中的- <a href="https://blog.icpz.dev/articles/notes/odhcpd-relay-mode-discuss/">odhcpd 中继模式原理、局限以及解决方案 | Silent Blog</a>，利用热拔插事件自动设定一整个ipv6公网网段为自己的子网，让路由器能够发现邻居。</p>
+<p>以下为对原博客的直接引用：</p>
+<p>方法1 - 重设路由表</p>
+<p>注意，该方法依赖 owipcalc 包来计算子网地址：<code>opkg install owipcalc</code>。<br>
+我们可以手动在 WAN 口获得 IPv6 地址后添加一条路由表，让整个子网重定向到 LAN 口，这个操作可以通过 OpenWrt 的 hotplug 机制来进行，保存以下脚本放在 <code>/etc/hotplug.d/iface/80-reset-route6 </code>并重启 WAN 接口即可：</p>
+<pre><code class="language-bash">
+#!/bin/sh
+
+wan_dev=&quot;wan6&quot;
+
+[ &quot;$HOTPLUG_TYPE&quot; = &quot;iface&quot; ] || exit 0
+[ &quot;$INTERFACE&quot; = &quot;$wan_dev&quot; ] || exit 0
+
+RTMETRIC=127
+
+. /lib/functions/network.sh
+
+network_get_physdev lan_dev lan || exit 0
+
+ifup_cb() {
+        local _lan_dev=&quot;$1&quot;
+        local _metric=&quot;$2&quot;
+
+        local wan_subnet
+        network_get_subnet6 wan_subnet &quot;$wan_dev&quot; || return
+        _wan_network=$(owipcalc &quot;${wan_subnet}&quot; network)
+
+        ip -6 route replace &quot;$_wan_network&quot; dev &quot;$_lan_dev&quot; metric &quot;$_metric&quot;
+}
+
+ifdown_cb() {
+        local _lan_dev=&quot;$1&quot;
+        local _metric=&quot;$2&quot;
+
+        ip -6 route flush dev &quot;$_lan_dev&quot; metric &quot;$_metric&quot;
+}
+
+case &quot;$ACTION&quot; in
+        ifup)
+                ifup_cb &quot;$lan_dev&quot; &quot;$RTMETRIC&quot;
+                ;;
+        ifdown)
+                ifdown_cb &quot;$lan_dev&quot; &quot;$RTMETRIC&quot;
+                ;;
+        ifupdate)
+                ifdown_cb &quot;$lan_dev&quot; &quot;$RTMETRIC&quot;
+                sleep 1
+                ifup_cb &quot;$lan_dev&quot; &quot;$RTMETRIC&quot;
+                ;;
+        *)
+                ;;
+esac
+
+exit 0
+</code></pre>
+<p>注记：原博客中提到的方法二：伪装PD方案在我校环境中不可用，推测原因是不转发通告到上级路由器（也就是真正有DP前缀来分配IP的路由器）会导致mac地址未注册（很好理解，此时的ipv6是我们的二级路由用假前缀自己分配给客户端的，并没有向上级通告，真正的注册机构并不知道你将这样的一些ip分配给了某些mac地址），这样上级路由器会将这样的数据包丢掉。</p>
+<hr>
+<h2 id="后记">后记</h2>
+<p><s>### 解决方案还不完美</s></p>
+<p><strong>20230320更新</strong></p>
+<p>终于解决了，爽。配合dnsmasq+smartdns+xxx，实现双栈双网并存。完美解决问题，剩下就是稳定性测试了。</p>
+<hr>
+<p><strong>20230320更新</strong>：几个参考链接</p>
+<ul>
+<li>
+<p><a href="https://jasper1024.com/jasper/codsa242cp3/">Openwrt ipv6 配置 </a></p>
+</li>
+<li>
+<p><a href="https://blog.icpz.dev/articles/notes/odhcpd-relay-mode-discuss/">odhcpd 中继模式原理、局限以及解决方案 | Silent Blog</a></p>
+</li>
+<li>
+<p><a href="https://chariri.moe/archives/644">南京大学教育网 OpenWrt IPv6 配置方案——宿舍网络工程系列 - 茶栗栗屋</a></p>
+</li>
+</ul>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a>
+<ul>
+<li><a href="#%E6%95%85%E4%BA%8B%E7%9A%84%E8%B5%B7%E5%9B%A0">故事的起因</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83">配置环境</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8F%8C%E6%A0%88%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95%E6%B1%87%E6%80%BB">双栈配置方法汇总</a>
+<ul>
+<li><a href="#%E6%96%B9%E6%A1%88%E4%B8%80ap%E6%96%B9%E6%A1%88">方案一：AP方案</a></li>
+<li><a href="#%E6%96%B9%E6%A1%88%E4%BA%8Cipv6-nat%E6%96%B9%E6%A1%88">方案二：IPV6-NAT方案</a></li>
+<li><a href="#%E6%96%B9%E6%A1%88%E4%B8%89%E5%9F%BA%E4%BA%8E%E7%BD%91%E6%A1%A5%E8%BF%87%E6%BB%A4%E6%8A%80%E6%9C%AF%E7%9A%84ipv6%E7%A9%BF%E9%80%8F%E6%96%B9%E6%A1%88ipv6-passthrough">方案三：基于网桥过滤技术的ipv6穿透方案(ipv6-passthrough)</a></li>
+<li><a href="#%E6%96%B9%E6%A1%88%E5%9B%9Bipv6%E4%B8%AD%E7%BB%A7%E6%96%B9%E6%A1%88">方案四：ipv6中继方案</a></li>
+</ul>
+</li>
+<li><a href="#%E5%90%8E%E8%AE%B0">后记</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://geeek.top/post/Jordan/">
+              <h3 class="post-title">
+                深入浅出Jordan标准型（兼博客数学公式渲染测试）
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by passion and love
+  <a class="rss" href="https://geeek.top/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

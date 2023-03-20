@@ -1,0 +1,283 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>你是如何被叔叔开盒的 | Elivis&#39; Blog</title>
+<link rel="shortcut icon" href="https://geeek.top/favicon.ico?v=1679300570926">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://geeek.top/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="你是如何被叔叔开盒的 | Elivis&#39; Blog - Atom Feed" href="https://geeek.top/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-160641531-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-160641531-1');
+</script>
+
+
+    <meta name="description" content="起因
+起因是有一天b站给我精准推荐了三次元世界的好友：
+
+瞬间就有了一种被叔叔开盒的感觉（
+因为这几位并不是我的b站关注，而我又没有添加自己的学校信息，因此不由得好奇叔叔这一波操作是如何实现的。
+后来看到了这样一张图：
+
+6：叔叔
+短链接跟..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content note-serif-sc-font">
+        <div class="site-header">
+  <a href="https://geeek.top">
+  <img class="avatar" src="https://geeek.top/images/avatar.png?v=1679300570926" alt="">
+  </a>
+  <h1 class="site-title">
+    Elivis&#39; Blog
+  </h1>
+  <p class="site-description">
+    
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+      
+        <a href="/friends" class="menu">
+          友链
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              你是如何被叔叔开盒的
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-02-09
+              </span>
+              <span>
+                8 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h2 id="起因">起因</h2>
+<p>起因是有一天b站给我精准推荐了三次元世界的好友：</p>
+<img src="/post-images/1675920194851.png" alt="被开盒" style="zoom: 33%;" />
+<p>瞬间就有了一种被叔叔开盒的感觉（</p>
+<p>因为这几位并不是我的b站关注，而我又没有添加自己的学校信息，因此不由得好奇叔叔这一波操作是如何实现的。</p>
+<p>后来看到了这样一张图：</p>
+<img src="/post-images/1675920177001.png" alt="QQ截图" style="zoom: 33%;" />
+<p>6：叔叔</p>
+<h2 id="短链接跟踪狂">短链接跟踪狂</h2>
+<p>既然已经被叔叔开盒了，不妨仔细看看叔叔在点击分享按钮之后都干了什么。</p>
+<h3 id="微信分享">微信分享</h3>
+<p>用b站app分享一个链接到微信，模拟平常的好友分享。</p>
+<p>复制得到分享链接：</p>
+<p><code>https://www.bilibili.com/video/BV12Y411q7S1/?buvid=XX78BC87E3D7352858A5DF0A0E3B4EE31378B&amp;is_story_h5=false&amp;mid=av4ecIxr1KXV%2Fb27pLr7BA%3D%3D&amp;p=1&amp;plat_id=116&amp;share_from=ugc&amp;share_medium=android&amp;share_plat=android&amp;share_session_id=2f2b6821-9ba1-484a-98a3-b85d171426ab&amp;share_source=WEIXIN&amp;share_tag=s_i&amp;timestamp=1675911240&amp;unique_k=zoTJSAQ&amp;up_id=23947287</code></p>
+<p>Unicode解转义一下：</p>
+<p><code>https://www.bilibili.com/video/BV12Y411q7S1/?buvid=XX78BC87E3D7352858A5DF0A0E3B4EE31378B&amp;is_story_h5=false&amp;mid=av4ecIxr1KXV/b27pLr7BA==&amp;p=1&amp;plat_id=116&amp;share_from=ugc&amp;share_medium=android&amp;share_plat=android&amp;share_session_id=2f2b6821-9ba1-484a-98a3-b85d171426ab&amp;share_source=WEIXIN&amp;share_tag=s_i&amp;timestamp=1675911240&amp;unique_k=zoTJSAQ&amp;up_id=23947287</code></p>
+<p>可以看到这个链接非常的脏，上面带着大量的参数，都是用于追踪用户行为的。下面逐个分析：</p>
+<ul>
+<li><code>https://www.bilibili.com/video/BV12Y411q7S1/</code>是核心链接，也就是一个干净的视频网址。<code>?</code>后面是跟踪参数。</li>
+<li><code>is_story_h5=false</code>应该是和播放器相关的一个参数。</li>
+<li><code>mid=av4ecIxr1KXV/b27pLr7BA==</code>和个人数据强相关的一个参数，类似于ID，长度24位。</li>
+<li><code>p=1</code>说明这是分p视频的p1。</li>
+<li><code>buvid=XX78BC87E3D7352858A5DF0A0E3B4EE31378B</code>是个人信息标识<code>buvid</code>，值是一个长度为37的字符串。应该是你的<code>uid</code>哈希后的值，不过37位的长度实在太奇怪了，这里目前还不知道怎么处理的。</li>
+<li><code>share_from=ugc</code>表明分享者是从视频页面点击分享的。</li>
+<li><code>share_medium=android</code>表明分享者的手机是Android系统。</li>
+<li><code>share_plat=android</code>表明分享者的b站平台是Android客户端。</li>
+<li><code>share_session_id=2f2b6821-9ba1-484a-98a3-b85d171426ab</code>是叔叔数据库中记录你分享信息的标识。</li>
+<li><code>share_source=WEIXIN</code>表明你的分享平台是微信。</li>
+<li><code>timestamp=1675911240</code>一个UNIX时间戳，转换完后是分享时间：北京时间<code>2023-02-09 10:54:00</code>。</li>
+<li><code>unique_k=zoTJSAQ</code>是<code>b23.tv</code>的短链接参数，不信可以访问一下<code>https://b23.tv/zoTJSAQ</code>。</li>
+<li><code>up_id=23947287</code>是分享的up主的裸<code>uid</code>，说明这个up的账号是<code>https://space.bilibili.com/23947287</code>。</li>
+</ul>
+<h3 id="qq好友分享">QQ好友分享</h3>
+<p>直接可以复制得到链接，此处可以直接抓到<code>b23.tv</code>的短链。</p>
+<p><code>https://b23.tv/9yNFN1F?share_medium=android&amp;share_source=qq&amp;bbid=XX78BC87E3D7352858A5DF0A0E3B4EE31378B&amp;ts=1675913208401</code></p>
+<p>短链也带参数绷不住了：</p>
+<ul>
+<li><code>share_medium=android</code>表明分享者手机是Android系统。</li>
+<li><code>share_source=qq</code>表明分享平台是QQ。</li>
+<li>还有一个追踪的<code>bbid=XX78BC87E3D7352858A5DF0A0E3B4EE31378B</code>，对照一下刚才的微信分享，一致，基本可以断定是这就是你在叔叔那里的追踪专用<strong>身份证号</strong>。</li>
+<li>时间戳<code>ts=1675913208401</code>表明你的分享时间，值得注意的是这里的时间戳是13位的，说明短链接时间戳的生成脚本语言大概率是java，13位的时间戳可以精确到毫秒，只是意义不大就是了。</li>
+</ul>
+<p>总的来看这应该是跟踪信息的摘要，是长链接参数的子集。</p>
+<p>继续追踪http响应，发现302到了下面的长链接：</p>
+<p><code>https://www.bilibili.com/video/BV12Y411q7S1?buvid=XX78BC87E3D7352858A5DF0A0E3B4EE31378B&amp;is_story_h5=false&amp;mid=av4ecIxr1KXV/b27pLr7BA==&amp;p=1&amp;plat_id=116&amp;share_from=ugc&amp;share_medium=android&amp;share_plat=android&amp;share_session_id=4ed16367-bd2d-4b63-9f2a-77488423b712&amp;share_source=QQ&amp;share_tag=s_i×tamp=1675913208&amp;unique_k=9yNFN1F&amp;up_id=23947287</code></p>
+<p>此链接就和微信分享的分析一致了，这是一个包含更多追踪参数的脏链接。</p>
+<h3 id="网页端分享">网页端分享</h3>
+<p>获得链接：</p>
+<p><code>https://www.bilibili.com/video/BV12Y411q7S1/?share_source=copy_web&amp;vd_source=d8a07be97b699fb9fdd08c6fed26e940&amp;t=398</code></p>
+<p>明显的能看出来链接参数比APP端分享的少了很多，叔叔没马😅。</p>
+<p>一共只有三个参数：</p>
+<ul>
+<li><code>share_source=copy_web</code>表明分享来源是网页。</li>
+<li><code>vd_source=d8a07be97b699fb9fdd08c6fed26e940</code>也是追踪用的个人身份ID，但是算法和APP分享的不太一样，这个长度是32位的，感觉应该是正常的哈希。</li>
+<li><code>t=398</code>是精准空降用的，本例可以直接空降到视频<code>398</code>秒。</li>
+</ul>
+<h3 id="不止于此">不止于此</h3>
+<p>叔叔的<code>b23.tv</code>短链不止可以追踪你的视频分享，其追踪范围是所有分享。包括私信，个人空间等。</p>
+<p>比如我QQ分享一下可汗的个人空间，可以得到以下网址：</p>
+<p><code>https://b23.tv/2wBnJ6S?share_medium=android&amp;share_source=qq&amp;bbid=XX78BC87E3D7352858A5DF0A0E3B4EE31378B&amp;ts=1675918635160</code></p>
+<p>同样302得到一个类似的脏网址：</p>
+<p><code>https://space.bilibili.com/23947287?plat_id=1&amp;share_from=space&amp;share_medium=android&amp;share_plat=android&amp;share_session_id=c45863ef-c4df-458c-a693-f8e10c30230f&amp;share_source=QQ&amp;share_tag=s_i&amp;timestamp=1675918635&amp;unique_k=2wBnJ6S</code></p>
+<p>如果在客户端直接选择分享链接，则会得到：</p>
+<p><code>【小约翰可汗的个人空间-哔哩哔哩】 https://b23.tv/GWB1V0D</code></p>
+<p>302到脏网址：</p>
+<p><code>https://space.bilibili.com/23947287?plat_id=1&amp;share_from=space&amp;share_medium=android&amp;share_plat=android&amp;share_session_id=917fbc26-70d8-4c90-a0ad-f677dca02789&amp;share_source=COPY&amp;share_tag=s_i&amp;timestamp=1675918572&amp;unique_k=GWB1V0D</code></p>
+<p>参数细节都是类似的，不再赘述。只是有意思的一点是，在手机端分享网址的短连接本体是不带参数是摘要的，分享到APP内则是带参数摘要的，在电脑网页端分享则追踪参数最少——只带一个个人ID，不知道叔叔是不是心虚了，越是不好看到网址的地方参数越脏😅。当然以及平台短网址有追踪参数摘要，对于b站来说完全没必要写，因此很难不怀疑是和社交平台做了什么PY交易，暴露参数摘要应该是提供数据给麻花疼用的😅，口区😅。</p>
+<h2 id="反击">反击</h2>
+<p>短链接带追踪参数之前已经被人发现了，叔叔就是这样通过好友或者群聊的分享摸清了大家的社交关系，进而达到开盒的效果。是的，我被推荐的好友都是曾经在私聊或者群里发过b站分享的。</p>
+<h3 id="避免追踪">避免追踪</h3>
+<p>首先就是不建议直接使用b站分享功能到公共群聊。网上可以查到之前早一段时间叔叔的分享id是没有哈希过的，直接就是裸<code>uid</code>，导致有人在帖子上使用分享链接被人分析后开盒。不过目前哈希过的个人id不太会有被别人开盒的可能（，只会被叔叔自己开盒😅。</p>
+<p>如果愿意动动小手，可以使用一个链接清洗的网站：<a href="https://b23.wtf/">b23.wtf</a>，把你要分享的<code>b23.tv</code>短链域名后缀替换为<code>b23.wtf</code>然后复制清洗以后的网址可以避免追踪。</p>
+<p><strong>如果有办法直接获取<code>bv</code>号，建议直接分享<code>bv</code>号。</strong></p>
+<h2 id="最后">最后</h2>
+<p>阴谋论：带追踪的分享链接极有可能不止叔叔一家，诸如淘宝等强实名平台的分享链其实更为可怕。淘宝几乎关联了一个人的全部个人敏感信息——手机号，银行卡，身份证号，家庭住址。虽然马云进军社交app的努力失败了，但是这并不代表他不能用一种更为隐蔽的方式渗透获得我们的社交系统。</p>
+<blockquote>
+<p><strong>互联网下，没有隐私。</strong></p>
+</blockquote>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E8%B5%B7%E5%9B%A0">起因</a></li>
+<li><a href="#%E7%9F%AD%E9%93%BE%E6%8E%A5%E8%B7%9F%E8%B8%AA%E7%8B%82">短链接跟踪狂</a>
+<ul>
+<li><a href="#%E5%BE%AE%E4%BF%A1%E5%88%86%E4%BA%AB">微信分享</a></li>
+<li><a href="#qq%E5%A5%BD%E5%8F%8B%E5%88%86%E4%BA%AB">QQ好友分享</a></li>
+<li><a href="#%E7%BD%91%E9%A1%B5%E7%AB%AF%E5%88%86%E4%BA%AB">网页端分享</a></li>
+<li><a href="#%E4%B8%8D%E6%AD%A2%E4%BA%8E%E6%AD%A4">不止于此</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8F%8D%E5%87%BB">反击</a>
+<ul>
+<li><a href="#%E9%81%BF%E5%85%8D%E8%BF%BD%E8%B8%AA">避免追踪</a></li>
+</ul>
+</li>
+<li><a href="#%E6%9C%80%E5%90%8E">最后</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://geeek.top/post/dian-lu-x-xiao-shi-su-tong-jiao-cheng/">
+              <h3 class="post-title">
+                电路X小时速通教程
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by passion and love
+  <a class="rss" href="https://geeek.top/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
